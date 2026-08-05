@@ -393,6 +393,10 @@
     #define HAVE_TLS_EXTENSIONS
     #define HAVE_HKDF
 
+    /* Server Name Indication - needed for any server that hosts multiple
+     * sites on one IP (e.g. CDNs like Cloudflare); not tied to esp-tls. */
+    #define HAVE_SNI
+
     /* May be required */
     #ifndef HAVE_AEAD
     #endif

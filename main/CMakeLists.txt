@@ -66,6 +66,11 @@ idf_component_register(SRCS main.c
                             "./include"
                        PRIV_REQUIRES "${THIS_PRIV_REQUIRES_DRIVER}"
                                      "${MAIN_WOLFSSL_COMPONENT_NAME}"
+                                     "protocol_examples_common"
+                                     "nvs_flash"
+                                     "esp_netif"
+                                     "esp_event"
+                                     "lwip"
                        )
 
 #

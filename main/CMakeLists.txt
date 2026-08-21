@@ -1,8 +1,3 @@
-# wolfSSL Espressif Example Project/main CMakeLists.txt
-#   v1.2
-#
-# wolfssl template
-#
 message(STATUS "Begin wolfSSL main CMakeLists.txt")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DWOLFSSL_USER_SETTINGS")
 
@@ -61,12 +56,12 @@ else()
 endif()
 
 ## register_component()
-idf_component_register(SRCS main.c
+idf_component_register(SRCS main.c wifi.c
                        INCLUDE_DIRS "."
                             "./include"
                        PRIV_REQUIRES "${THIS_PRIV_REQUIRES_DRIVER}"
                                      "${MAIN_WOLFSSL_COMPONENT_NAME}"
-                                     "protocol_examples_common"
+				     "esp_wifi"
                                      "nvs_flash"
                                      "esp_netif"
                                      "esp_event"

@@ -7,19 +7,6 @@ message(STATUS "Begin project ${CMAKE_PROJECT_NAME}")
 
 cmake_minimum_required(VERSION 3.16)
 
-# For the main project using ESP-IDF version 6 or greater.
-# Numerous "dangerous relocation: call8: call target out of range: memcpy" errors encountered
-# So we'll allow long calls with the `-mlongcalls` compiler option for all components.
-if(IDF_VERSION_MAJOR GREATER_EQUAL 6)
-    if(IDF_TARGET STREQUAL "esp32" OR IDF_TARGET STREQUAL "esp32s2" OR IDF_TARGET STREQUAL "esp32s3")
-        message(STATUS "Adding mlongcalls")
-        add_compile_options(-mlongcalls)
-        add_link_options(-mlongcalls)
-        set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -mlongcalls")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mlongcalls")
-    endif()
-endif()
-
 # Optional no watchdog typically used for test & benchmark
 if (idf_target STREQUAL "esp8266" OR IDF_TARGET STREQUAL "esp8266" OR IDF_VERSION_MAJOR VERSION_LESS "5.0")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DWOLFSSL_ESP_NO_WATCHDOG=1")
@@ -30,7 +17,7 @@ endif()
 # The wolfSSL CMake file (components/wolfssl/CMakeLists.txt) auto-detects the
 # source directory. If it can't find it, set WOLFSSL_ROOT here or via the
 # WOLFSSL_ROOT environment variable, e.g.:
-set(WOLFSSL_ROOT "~/.builds/wolfssl")
+set(WOLFSSL_ROOT "~/wolfssl_esp/wolfssl")
 #
 # Optional WOLFSSL_CMAKE_SYSTEM_NAME detection to find
 # USE_MY_PRIVATE_CONFIG path for my_private_config.h
@@ -41,33 +28,7 @@ set(WOLFSSL_ROOT "~/.builds/wolfssl")
 #   Linux:  ~/workspace
 # Windows:  C:\workspace
 #
-if(WIN32)
-    # Windows-specific configuration here
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DWOLFSSL_CMAKE_SYSTEM_NAME_WINDOWS")
-    message(STATUS "Detected Windows")
-endif()
-if(CMAKE_HOST_UNIX)
-    message(STATUS "Detected UNIX")
-endif()
-if(APPLE)
-    message(STATUS "Detected APPLE")
-endif()
-if(CMAKE_HOST_UNIX AND (NOT APPLE) AND EXISTS "/proc/sys/fs/binfmt_misc/WSLInterop")
-    # Windows-specific configuration here
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DWOLFSSL_CMAKE_SYSTEM_NAME_WSL")
-    message(STATUS "Detected WSL")
-endif()
-if(CMAKE_HOST_UNIX AND (NOT APPLE) AND (NOT WIN32))
-    # Windows-specific configuration here
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DWOLFSSL_CMAKE_SYSTEM_NAME_LINUX")
-    message(STATUS "Detected Linux")
-endif()
-if(APPLE)
-    # Windows-specific configuration here
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DWOLFSSL_CMAKE_SYSTEM_NAME_APPLE")
-    message(STATUS "Detected Apple")
-endif()
-# End optional WOLFSSL_CMAKE_SYSTEM_NAME
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DWOLFSSL_CMAKE_SYSTEM_NAME_LINUX")
 
 # This example uses an extra component for common functions such as Wi-Fi and Ethernet connection.
 # set (PROTOCOL_EXAMPLES_DIR $ENV{IDF_PATH}/examples/common_components/protocol_examples_common)
@@ -140,32 +101,9 @@ endif()
 # Not only is a project-level "set(COMPONENTS" not needed here, this will cause
 # an unintuitive error about  Unknown CMake command "esptool_py_flash_project_args".
 
-if(0)
-    message(STATUS "Begin optional PROTOCOL_EXAMPLES_DIR include")
-    # This example uses an extra component for common functions such as Wi-Fi and Ethernet connection.
-    set (PROTOCOL_EXAMPLES_DIR $ENV{IDF_PATH}/examples/common_components/protocol_examples_common)
-
-    if (EXISTS "${PROTOCOL_EXAMPLES_DIR}")
-        message(STATUS "Found PROTOCOL_EXAMPLES_DIR=${PROTOCOL_EXAMPLES_DIR}")
-        set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/examples/common_components/protocol_examples_common)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DFOUND_PROTOCOL_EXAMPLES_DIR")
-    else()
-        message(STATUS "NOT FOUND: PROTOCOL_EXAMPLES_DIR=${PROTOCOL_EXAMPLES_DIR}")
-    endif()
-    message(STATUS "End optional PROTOCOL_EXAMPLES_DIR include")
-endif()
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
-# Once the project is loaded, next check for ESP-IDF version 6 or greater.
-# Numerous "dangerous relocation: call8: call target out of range: memcpy" errors encountered
-# So we'll allow long calls with the `-mlongcalls` compiler option for all components.
-if(IDF_VERSION_MAJOR GREATER_EQUAL 6)
-    if(IDF_TARGET STREQUAL "esp32" OR IDF_TARGET STREQUAL "esp32s2" OR IDF_TARGET STREQUAL "esp32s3")
-        message(STATUS "mlongcalls for all components")
-        idf_build_set_property(COMPILE_OPTIONS "-mlongcalls" APPEND)
-    endif()
-endif()
-
-project(wolfssl_template)
+idf_build_set_property(MINIMAL_BUILD ON)
+project(client)
 message(STATUS "end project")

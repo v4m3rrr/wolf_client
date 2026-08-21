@@ -209,18 +209,15 @@ menu "wolfSSL"
             help
                 Sets HAVE_OCSP
 
+	config TLS_STACK_WOLFSSL
+	# Invisible option that locks TLS_STACK_WOLFSSL to ESP_TLS_USING_WOLFSSL
+	bool 
+	default n
+	select FREERTOS_ENABLE_BACKWARD_COMPATIBILITY
+	help
+	    Includes wolfSSL in ESP-TLS so that it can be compiled with wolfSSL as its SSL/TLS library.
+	    Enabled when wolfSSL is selected in ESP_TLS_LIBRARY_CHOOSE.
     endmenu # Protocol Config
-    # -----------------------------------------------------------------------------------------------------------------
-
-    # -----------------------------------------------------------------------------------------------------------------
-    config TLS_STACK_WOLFSSL
-        # Invisible option that locks TLS_STACK_WOLFSSL to ESP_TLS_USING_WOLFSSL
-        bool
-        default n
-        select FREERTOS_ENABLE_BACKWARD_COMPATIBILITY
-        help
-            Includes wolfSSL in ESP-TLS so that it can be compiled with wolfSSL as its SSL/TLS library.
-            Enabled when wolfSSL is selected in ESP_TLS_LIBRARY_CHOOSE.
 
     menu "wolfSSL ESP-TLS"
         depends on ESP_TLS_USING_WOLFSSL
